@@ -36,8 +36,8 @@ resource "aws_iam_group" "default" {
 
 # https://www.terraform.io/docs/providers/aws/r/iam_user_group_membership.html
 resource "aws_iam_user_group_membership" "default" {
-  count  = local.enabled && length(var.user_names) > 0 ? length(var.user_names) : 0
-  user   = element(var.user_names, count.index)
+  for_each  = toset(var.user_names)
+  user   = each.key
   groups = [join("", aws_iam_group.default.*.id)]
 }
 
